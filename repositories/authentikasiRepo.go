@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"errors"
+
 	"github.com/MichaelSitanggang/bookstore/entities"
 	"gorm.io/gorm"
 )
@@ -24,6 +26,9 @@ func (r *authRepo) FindByEmail(email string) (*entities.User, error) {
 	var user entities.User
 	err := r.db.Where("email = ?", email).First(&user).Error
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &user, nil
@@ -39,7 +44,7 @@ func (r *authRepo) CreateUser(user *entities.User) error {
 
 func (r *authRepo) FindByOtp(otp string) (*entities.User, error) {
 	var user entities.User
-	if err := r.db.Where("otp = ?", otp).First(user).Error; err != nil {
+	if err := r.db.Where("otp = ?", otp).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil

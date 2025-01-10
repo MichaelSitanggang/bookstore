@@ -15,7 +15,7 @@ import (
 
 type AuthService interface {
 	Login(email, password string) (*entities.User, error)
-	Register(namalengkap, email, password string, umur int) (string, error)
+	Register(namalengkap string, email string, umur int, password string) (string, error)
 	VerifikasiOtp(otp string) error
 	SendOtp(email string) (string, error)
 }
@@ -56,7 +56,7 @@ func (s *authService) SendOtp(email string) (string, error) {
 	return "", errors.New("otp tidak ada")
 }
 
-func (s *authService) Register(namalengkap, email, password string, umur int) (string, error) {
+func (s *authService) Register(namalengkap string, email string, umur int, password string) (string, error) {
 	emails, _ := s.repo.FindByEmail(email)
 	if emails != nil {
 		return "", errors.New("email sudah terdaftar")
@@ -67,7 +67,7 @@ func (s *authService) Register(namalengkap, email, password string, umur int) (s
 		Umur:        umur,
 		Password:    password,
 	}
-	if len(password) <= 7 {
+	if len(user.Password) < 7 {
 		return "", errors.New("password harus lebih dari 7 karakter")
 	}
 
