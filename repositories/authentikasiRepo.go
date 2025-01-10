@@ -9,6 +9,7 @@ type AuthRepo interface {
 	FindByEmail(email string) (*entities.User, error)
 	UpdateOtp(user *entities.User) error
 	CreateUser(user *entities.User) error
+	FindByOtp(otp string) (*entities.User, error)
 }
 
 type authRepo struct {
@@ -34,4 +35,12 @@ func (r *authRepo) UpdateOtp(user *entities.User) error {
 
 func (r *authRepo) CreateUser(user *entities.User) error {
 	return r.db.Create(user).Error
+}
+
+func (r *authRepo) FindByOtp(otp string) (*entities.User, error) {
+	var user entities.User
+	if err := r.db.Where("otp = ?", otp).First(user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
