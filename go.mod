@@ -3,6 +3,7 @@ module github.com/MichaelSitanggang/bookstore
 go 1.23.0
 
 require (
+	github.com/joho/godotenv v1.5.1
 	github.com/sendgrid/sendgrid-go v3.16.0+incompatible
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.12

@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"math/rand"
+	"os"
 	"strconv"
 	"time"
 
@@ -44,7 +45,7 @@ func (s *authService) SendOtp(email string) (string, error) {
 	plainTextContent := "Code Otp"
 	htmlContent := "<strong>Code Otp Kamu adalah" + otpStr + "</strong>"
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
-	client := sendgrid.NewSendClient("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")
+	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
 	response, err := client.Send(message)
 	if err != nil {
 		return "", err
