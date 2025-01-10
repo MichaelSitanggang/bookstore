@@ -107,6 +107,3 @@ func (s *authService) Login(email, password string) (*entities.User, error) {
 	}
 	return user, nil
 }
-
-//
-//
