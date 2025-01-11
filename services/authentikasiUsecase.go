@@ -43,7 +43,7 @@ func (s *authService) SendOtp(email string) (string, error) {
 	subject := "Verifikasi Otp"
 	to := mail.NewEmail("User", email)
 	plainTextContent := "Code Otp"
-	htmlContent := "<strong>Code Otp Kamu adalah" + otpStr + "</strong>"
+	htmlContent := "<strong>Code Otp Kamu adalah " + otpStr + "</strong>"
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
 	response, err := client.Send(message)
