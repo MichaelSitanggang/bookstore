@@ -21,7 +21,7 @@ type Claims struct {
 
 func GenerateJwt(accountID int, role string) (string, error) {
 	ExpiredTime := time.Now().Add(24 * time.Hour)
-	claims := Claims{
+	claims := Claims{ // payload
 		AccountID: accountID,
 		Role:      role,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -29,8 +29,8 @@ func GenerateJwt(accountID int, role string) (string, error) {
 			Issuer:    "BookStore",
 		},
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(JwtKey)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims) // header
+	tokenString, err := token.SignedString(JwtKey)             // singnature
 	if err != nil {
 		return "", nil
 	}
