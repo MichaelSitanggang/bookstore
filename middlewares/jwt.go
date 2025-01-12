@@ -2,8 +2,10 @@ package middlewares
 
 import (
 	"os"
+	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -35,4 +37,34 @@ func GenerateJwt(accountID int, role string) (string, error) {
 		return "", nil
 	}
 	return tokenString, nil
+}
+
+func AuthJwt() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		HeaderAuth := c.GetHeader("Authorization")
+		if HeaderAuth == "" {
+			c.JSON(401, gin.H{"message": "Header kosong"})
+			c.Abort()
+			return
+		}
+		splits := strings.Split(HeaderAuth, " ")
+		if len(splits) != 2 || splits[0] != "Bearer" {
+			c.JSON(401, gin.H{"message": "bearer error"})
+			c.Abort()
+			return
+		}
+		tokenString := splits[1]
+		claims := &Claims{}
+		token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
+			return JwtKey, nil
+		})
+		if err != nil || !token.Valid {
+			c.JSON(401, gin.H{"message": "token error"})
+			c.Abort()
+			return
+		}
+		c.Set("accountID", claims.AccountID)
+		c.Set("role", claims.Role)
+		c.Next()
+	}
 }
