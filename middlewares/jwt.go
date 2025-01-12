@@ -55,7 +55,7 @@ func AuthJwt() gin.HandlerFunc {
 		}
 		tokenString := splits[1]
 		claims := &Claims{}
-		token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) { // singnature
 			return JwtKey, nil
 		})
 		if err != nil || !token.Valid {

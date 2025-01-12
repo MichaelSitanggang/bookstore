@@ -18,6 +18,7 @@ type AuthService interface {
 	Register(namalengkap string, email string, umur int, password string) (string, error)
 	VerifikasiOtp(otp string) error
 	SendOtp(email string) (string, error)
+	LoginAdmin(email, password string) (*entities.Admin, error)
 }
 
 type authService struct {
@@ -106,4 +107,12 @@ func (s *authService) Login(email, password string) (*entities.User, error) {
 		return nil, errors.New("otp belum diverifikasi")
 	}
 	return user, nil
+}
+
+func (s *authService) LoginAdmin(email, password string) (*entities.Admin, error) {
+	admin, _ := s.repo.FindByEmailAdmin(email)
+	if password != admin.Password {
+		return nil, errors.New("password salah")
+	}
+	return admin, nil
 }
