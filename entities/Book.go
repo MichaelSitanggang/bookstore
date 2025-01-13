@@ -9,4 +9,5 @@ type Book struct {
 	Penjualan int
 	Harga     float64
 	Review    int
+	Stok      int
 }
