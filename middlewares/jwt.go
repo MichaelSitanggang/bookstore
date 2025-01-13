@@ -57,6 +57,7 @@ func AuthJwt() gin.HandlerFunc {
 		claims := &Claims{}
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) { // singnature
 			return JwtKey, nil
+
 		})
 		if err != nil || !token.Valid {
 			c.JSON(401, gin.H{"message": "token error"})
@@ -68,3 +69,5 @@ func AuthJwt() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+//6108503494
