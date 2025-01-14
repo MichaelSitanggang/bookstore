@@ -13,13 +13,16 @@ func main() {
 
 	//repo
 	repoAuth := repositories.NewAuthRepo(db)
+	repoBook := repositories.NewBookRepo(db)
 
 	//services
 	usecaseAuth := services.NewAuthService(repoAuth)
+	usecaseBook := services.NewBookService(repoBook)
 
 	//controllers
-	controlAuth := controllers.NewAuthControl(usecaseAuth)
+	controlAuthStruck := controllers.NewAuthControl(usecaseAuth)
+	controlBookStruck := controllers.NewBookControl(usecaseBook)
 
-	r := routes.Router(controlAuth)
+	r := routes.Router(controlAuthStruck, controlBookStruck)
 	r.Run(":8080")
 }

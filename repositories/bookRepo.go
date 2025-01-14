@@ -21,9 +21,7 @@ func NewBookRepo(db *gorm.DB) BookRepo {
 
 func (r *bookRepo) FindAll() ([]entities.Book, error) {
 	var books []entities.Book
-	if err := r.db.Find(&books); err != nil {
-		return nil, nil
-	}
+	r.db.Find(&books)
 	return books, nil
 }
 

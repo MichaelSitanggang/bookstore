@@ -6,12 +6,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Router(authcontrol *controllers.AuthControl) *gin.Engine {
+func Router(authcontrol *controllers.AuthControl, bookcontrol *controllers.BookControl) *gin.Engine {
 	r := gin.Default()
 	r.POST("/register", authcontrol.Registers)
 	r.POST("/login", authcontrol.Login)
 	r.POST("/otpverifikasi", authcontrol.VerifikasiOtps)
 	route := r.Group("/")
 	route.Use(middlewares.AuthJwt())
+	route.GET("/books", bookcontrol.GetAllBooks)
+	route.GET("/books/:id", bookcontrol.GetByIdBooks)
+	route.POST("/books", bookcontrol.CreatedBooks)
 	return r
 }
