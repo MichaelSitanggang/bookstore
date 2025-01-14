@@ -8,7 +8,7 @@ import (
 type BookRepo interface {
 	FindAll() ([]entities.Book, error)
 	FindByID(id int) (*entities.Book, error)
-	// CreateBook(book *entities.Book) error
+	CreateBook(book *entities.Book) error
 }
 
 type bookRepo struct {
@@ -33,4 +33,8 @@ func (r *bookRepo) FindByID(id int) (*entities.Book, error) {
 		return nil, err
 	}
 	return &books, nil
+}
+
+func (r *bookRepo) CreateBook(book *entities.Book) error {
+	return r.db.Create(book).Error
 }
