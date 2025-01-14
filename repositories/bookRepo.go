@@ -7,7 +7,7 @@ import (
 
 type BookRepo interface {
 	FindAll() ([]entities.Book, error)
-	// FindByID(id int) (*entities.Book, error)
+	FindByID(id int) (*entities.Book, error)
 	// CreateBook(book *entities.Book) error
 }
 
@@ -25,4 +25,12 @@ func (r *bookRepo) FindAll() ([]entities.Book, error) {
 		return nil, nil
 	}
 	return books, nil
+}
+
+func (r *bookRepo) FindByID(id int) (*entities.Book, error) {
+	var books entities.Book
+	if err := r.db.Where("id = ?", id).First(&books).Error; err != nil {
+		return nil, err
+	}
+	return &books, nil
 }
