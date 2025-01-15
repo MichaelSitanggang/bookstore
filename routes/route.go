@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Router(authcontrol *controllers.AuthControl, bookcontrol *controllers.BookControl) *gin.Engine {
+func Router(authcontrol *controllers.AuthControl, bookcontrol *controllers.BookControl, filtercontrol *controllers.FilterControl) *gin.Engine {
 	r := gin.Default()
 	r.POST("/register", authcontrol.Registers)
 	r.POST("/login", authcontrol.Login)
@@ -16,5 +16,6 @@ func Router(authcontrol *controllers.AuthControl, bookcontrol *controllers.BookC
 	route.GET("/books", bookcontrol.GetAllBooks)
 	route.GET("/books/:id", bookcontrol.GetByIdBooks)
 	route.POST("/books", bookcontrol.CreatedBooks)
+	route.GET("/searchbooks", filtercontrol.CariBooks)
 	return r
 }
