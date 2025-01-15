@@ -17,5 +17,6 @@ func Router(authcontrol *controllers.AuthControl, bookcontrol *controllers.BookC
 	route.GET("/books/:id", bookcontrol.GetByIdBooks)
 	route.POST("/books", bookcontrol.CreatedBooks)
 	route.GET("/searchbooks", filtercontrol.CariBooks)
+	route.GET("/book-terjual", filtercontrol.TampilaknByPenjualan)
 	return r
 }

@@ -7,6 +7,7 @@ import (
 
 type FilterRepo interface {
 	FilterBooks(judul string, tahun int) (entities.Book, error)
+	FilterByPenjualan(limit int) ([]entities.Book, error)
 }
 
 type filterRepo struct {
@@ -28,4 +29,10 @@ func (r *filterRepo) FilterBooks(judul string, tahun int) (entities.Book, error)
 	}
 	err := query.Find(&book).Error
 	return book, err
+}
+
+func (r *filterRepo) FilterByPenjualan(limit int) ([]entities.Book, error) {
+	var books []entities.Book
+	err := r.db.Order("Penjualan DESC").Limit(limit).Find(&books).Error
+	return books, err
 }

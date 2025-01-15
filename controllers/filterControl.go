@@ -34,3 +34,13 @@ func (ctrl *FilterControl) CariBooks(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"status": "berhasil", "code": 200, "meta": gin.H{"data": filter}})
 }
+
+func (ctrl *FilterControl) TampilaknByPenjualan(c *gin.Context) {
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "4"))
+	book, err := ctrl.servic.TampilkanPenjualan(limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "berhasil", "code": 200, "meta": gin.H{"data": book}})
+}

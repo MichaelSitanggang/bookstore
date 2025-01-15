@@ -7,6 +7,7 @@ import (
 
 type FilterBookService interface {
 	CariBooks(judul string, tahun int) (entities.Book, error)
+	TampilkanPenjualan(limit int) ([]entities.Book, error)
 }
 
 type filterBookService struct {
@@ -19,4 +20,8 @@ func NewFilterService(repo repositories.FilterRepo) FilterBookService {
 
 func (s *filterBookService) CariBooks(judul string, tahun int) (entities.Book, error) {
 	return s.repo.FilterBooks(judul, tahun)
+}
+
+func (s *filterBookService) TampilkanPenjualan(limit int) ([]entities.Book, error) {
+	return s.repo.FilterByPenjualan(limit)
 }
