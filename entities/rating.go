@@ -7,5 +7,4 @@ type Rating struct {
 	Ulasan string
 	Rating int
 	User   User
-	Book   Book
 }
