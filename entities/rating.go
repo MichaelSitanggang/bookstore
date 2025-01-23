@@ -8,3 +8,6 @@ type Rating struct {
 	Rating int
 	User   User
 }
+
+//buat rating besok
+//payment gateway besok
