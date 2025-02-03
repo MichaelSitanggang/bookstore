@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/MichaelSitanggang/bookstore/entities"
 	"github.com/MichaelSitanggang/bookstore/services"
 	"github.com/gin-gonic/gin"
 )
@@ -17,23 +16,20 @@ func NewRatingControl(ratingService services.RatingServices) *RatingController {
 }
 
 func (ctrl *RatingController) AddsRating(c *gin.Context) {
-	var rating entities.Rating
-
-	userID, _ := c.Get("accountID")
-	if err := c.ShouldBindJSON(&rating); err != nil {
+	type request struct {
+		BookID int    `json:"bookID"`
+		Rating int    `json:"rating"`
+		Ulasan string `json:"ulasan"`
+	}
+	var req request
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	rating.UserID = userID.(int)
-	err := ctrl.ratingService.TambangRating(rating)
-	if err != nil {
+	userID, _ := c.Get("accountID")
+	if err := ctrl.ratingService.TambahReview(userID.(int), req.BookID, req.Rating, req.Ulasan); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	err = ctrl.ratingService.UbahBookRating(rating.BookID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"message": "Rating added and book rating updated"})
+	c.JSON(http.StatusOK, gin.H{"message": "ulasan berhasil ditambah"})
 }

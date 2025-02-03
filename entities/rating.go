@@ -1,11 +1,11 @@
 package entities
 
 type Rating struct {
-	ID     int `gorm:"primaryKey"`
+	ID     int
 	UserID int
 	BookID int
-	Ulasan string
 	Rating int
+	Ulasan string
 	User   User
 }
 

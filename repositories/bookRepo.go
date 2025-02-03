@@ -21,13 +21,13 @@ func NewBookRepo(db *gorm.DB) BookRepo {
 
 func (r *bookRepo) FindAll() ([]entities.Book, error) {
 	var books []entities.Book
-	r.db.Find(&books)
+	r.db.Preload("Reviews.User").Find(&books)
 	return books, nil
 }
 
 func (r *bookRepo) FindByID(id int) (*entities.Book, error) {
 	var books entities.Book
-	if err := r.db.Where("id = ?", id).First(&books).Error; err != nil {
+	if err := r.db.Preload("Reviews.User").Where("id = ?", id).First(&books).Error; err != nil {
 		return nil, err
 	}
 	return &books, nil

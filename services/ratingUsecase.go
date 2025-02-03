@@ -6,8 +6,8 @@ import (
 )
 
 type RatingServices interface {
-	TambangRating(rating entities.Rating) error
-	UbahBookRating(bookID int) error
+	TambahReview(UserID int, BookID int, Rating int, ulasan string) error
+	UpdateRating(bookID int) error
 }
 
 type ratingServices struct {
@@ -18,14 +18,35 @@ func NewServicesRating(ratingRepo repositories.RatingRepo) RatingServices {
 	return &ratingServices{ratingRepo: ratingRepo}
 }
 
-func (s *ratingServices) TambangRating(rating entities.Rating) error {
-	return s.ratingRepo.AddRating(rating)
+func (s *ratingServices) TambahReview(UserID int, BookID int, Rating int, ulasan string) error {
+	rating := entities.Rating{
+		UserID: UserID,
+		BookID: BookID,
+		Rating: Rating,
+		Ulasan: ulasan,
+	}
+	if err := s.ratingRepo.AddRating(rating); err != nil {
+		return err
+	}
+	return s.UpdateRating(BookID)
 }
 
-func (s *ratingServices) UbahBookRating(bookID int) error {
-	averageRating, reviewCount, err := s.ratingRepo.GetTotalRatingByBook(bookID)
+func (s *ratingServices) UpdateRating(bookID int) error {
+	totalReviews, err := s.ratingRepo.CountReviewByBook(bookID)
 	if err != nil {
 		return err
 	}
-	return s.ratingRepo.UpdateBookRating(bookID, averageRating, reviewCount)
+	totalRating, err := s.ratingRepo.SumReviewByBook(bookID)
+	if err != nil {
+		return err
+	}
+	newRating := 0.0
+	if totalReviews > 0 {
+		newRating = totalRating / float64(totalReviews)
+	}
+	err = s.ratingRepo.UpdateBookRating(bookID, newRating)
+	if err != nil {
+		return err
+	}
+	return err
 }

@@ -7,8 +7,9 @@ import (
 
 type RatingRepo interface {
 	AddRating(rating entities.Rating) error
-	GetTotalRatingByBook(bookID int) (float64, int, error)
-	UpdateBookRating(bookID int, totalRating float64, reviewCount int) error
+	UpdateBookRating(BookID int, RatingBaru float64) error
+	CountReviewByBook(BookID int) (int, error)
+	SumReviewByBook(BookID int) (float64, error)
 }
 
 type ratingRepo struct {
@@ -20,35 +21,32 @@ func NewRatingRepo(db *gorm.DB) RatingRepo {
 }
 
 func (r *ratingRepo) AddRating(rating entities.Rating) error {
-	err := r.db.Create(rating).Error
-	if err != nil {
+	return r.db.Create(&rating).Error
+}
+
+func (r *ratingRepo) UpdateBookRating(BookID int, RatingBaru float64) error {
+	var book entities.Book
+	if err := r.db.First(&book, BookID).Error; err != nil {
 		return err
 	}
-	return nil
+	book.Review = RatingBaru
+	return r.db.Save(&book).Error
 }
 
-func (r *ratingRepo) GetTotalRatingByBook(bookID int) (float64, int, error) {
-	var rating []entities.Rating
-	var totalRating int
-
-	err := r.db.Where("book_id = ?", bookID).Find(&rating).Error
+func (r *ratingRepo) CountReviewByBook(BookID int) (int, error) {
+	var count int64
+	err := r.db.Model(&entities.Rating{}).Where("book_id = ?", BookID).Distinct("user_id").Count(&count).Error
 	if err != nil {
-		return 0, 0, err
+		return 0, nil
 	}
-	for _, r := range rating {
-		totalRating += r.Rating
-	}
-	count := len(rating)
-	if count == 0 {
-		return 0, 0, nil
-	}
-	averangeRating := float64(totalRating) / float64(count)
-	return averangeRating, count, nil
+	return int(count), nil
 }
 
-func (r *ratingRepo) UpdateBookRating(bookID int, totalRating float64, reviewCount int) error {
-	return r.db.Model(&entities.Book{}).Where("id = ?", bookID).Updates(map[string]interface{}{
-		"total_rating": totalRating,
-		"review":       reviewCount,
-	}).Error
+func (r *ratingRepo) SumReviewByBook(BookID int) (float64, error) {
+	var totalRating float64
+	err := r.db.Model(&entities.Rating{}).Where("book_id = ?", BookID).Select("SUM(rating)").Scan(&totalRating).Error
+	if err != nil {
+		return 0, err
+	}
+	return totalRating, nil
 }
