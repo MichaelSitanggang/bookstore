@@ -32,17 +32,13 @@ func (s *ratingServices) TambahReview(UserID int, BookID int, Rating int, ulasan
 }
 
 func (s *ratingServices) UpdateRating(bookID int) error {
-	totalReviews, err := s.ratingRepo.CountReviewByBook(bookID)
-	if err != nil {
-		return err
-	}
 	totalRating, err := s.ratingRepo.SumReviewByBook(bookID)
 	if err != nil {
 		return err
 	}
 	newRating := 0.0
-	if totalReviews > 0 {
-		newRating = totalRating / float64(totalReviews)
+	if totalRating > 0 {
+		newRating = totalRating
 	}
 	err = s.ratingRepo.UpdateBookRating(bookID, newRating)
 	if err != nil {
