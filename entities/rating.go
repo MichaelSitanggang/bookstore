@@ -9,5 +9,5 @@ type Rating struct {
 	User   User
 }
 
-//buat rating besok
 //payment gateway besok
+//fitur admin

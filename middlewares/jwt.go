@@ -69,5 +69,3 @@ func AuthJwt() gin.HandlerFunc {
 		c.Next()
 	}
 }
-
-//6108503494

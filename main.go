@@ -32,3 +32,4 @@ func main() {
 	r := routes.Router(controlAuthStruck, controlBookStruck, controlFilterStruck, controlRatingStruck)
 	r.Run(":8080")
 }
+ 
